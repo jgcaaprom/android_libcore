@@ -21,19 +21,19 @@
 #include "JniException.h"
 #include "ScopedPrimitiveArray.h"
 #include "ScopedUtfChars.h"
-#include "UniquePtr.h"
 #include "jni.h"
 #include <openssl/bn.h>
 #include <openssl/crypto.h>
 #include <openssl/err.h>
 #include <stdio.h>
+#include <memory>
 
 struct BN_CTX_Deleter {
   void operator()(BN_CTX* p) const {
     BN_CTX_free(p);
   }
 };
-typedef UniquePtr<BN_CTX, BN_CTX_Deleter> Unique_BN_CTX;
+typedef std::unique_ptr<BN_CTX, BN_CTX_Deleter> Unique_BN_CTX;
 
 static BIGNUM* toBigNum(jlong address) {
   return reinterpret_cast<BIGNUM*>(static_cast<uintptr_t>(address));
