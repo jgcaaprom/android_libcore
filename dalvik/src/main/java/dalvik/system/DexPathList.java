@@ -27,10 +27,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipFile;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
-import static android.system.OsConstants.*;
+import libcore.io.ClassPathURLStreamHandler;
+
+import static android.system.OsConstants.S_ISDIR;
 
 /**
  * A pair of lists of entries, associated with a {@code ClassLoader}.
@@ -396,7 +397,7 @@ import static android.system.OsConstants.*;
         private final File zip;
         private final DexFile dexFile;
 
-        private ZipFile zipFile;
+        private ClassPathURLStreamHandler urlHandler;
         private boolean initialized;
 
         public Element(File file, boolean isDirectory, File zip, DexFile dexFile) {
@@ -428,7 +429,11 @@ import static android.system.OsConstants.*;
             }
 
             try {
+<<<<<<< HEAD
                 zipFile = new ZipFile(zip);
+=======
+                urlHandler = new ClassPathURLStreamHandler(zip.getPath());
+>>>>>>> 05a5c2f... Modification to the way boot classpath resources are loaded
             } catch (IOException ioe) {
                 /*
                  * Note: ZipException (a subclass of IOException)
@@ -437,7 +442,6 @@ import static android.system.OsConstants.*;
                  * file).
                  */
                 System.logE("Unable to open zip file: " + file, ioe);
-                zipFile = null;
             }
         }
 
@@ -457,14 +461,12 @@ import static android.system.OsConstants.*;
                 }
             }
 
-            if (zipFile == null || zipFile.getEntry(name) == null) {
-                /*
-                 * Either this element has no zip/jar file (first
-                 * clause), or the zip/jar file doesn't have an entry
-                 * for the given name (second clause).
+            if (urlHandler == null) {
+                /* This element has no zip/jar file.
                  */
                 return null;
             }
+<<<<<<< HEAD
 
             try {
                 /*
@@ -478,6 +480,9 @@ import static android.system.OsConstants.*;
             } catch (MalformedURLException ex) {
                 throw new RuntimeException(ex);
             }
+=======
+            return urlHandler.getEntryUrlOrNull(name);
+>>>>>>> 05a5c2f... Modification to the way boot classpath resources are loaded
         }
     }
 }
