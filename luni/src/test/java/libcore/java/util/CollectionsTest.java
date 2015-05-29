@@ -17,9 +17,7 @@
 package libcore.java.util;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -94,23 +92,6 @@ public final class CollectionsTest extends TestCase {
             i.remove();
             fail();
         } catch (IllegalStateException expected) {
-        }
-    }
-
-    public void testSortFastPath_incrementsModcount() {
-        ArrayList<String> list = new ArrayList<String>(16);
-        list.add("coven");
-        list.add("asylum");
-        list.add("murder house");
-        list.add("freak show");
-
-        Iterator<String> it = list.iterator();
-        it.next();
-        Collections.sort(list);
-        try {
-            it.next();
-            fail();
-        } catch (ConcurrentModificationException expect) {
         }
     }
 }
