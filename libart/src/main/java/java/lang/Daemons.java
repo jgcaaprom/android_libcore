@@ -80,10 +80,6 @@ public final class Daemons {
         }
 
         public synchronized void interrupt() {
-            interrupt(thread);
-        }
-
-        public synchronized void interrupt(Thread thread) {
             if (thread == null) {
                 throw new IllegalStateException("not running");
             }
@@ -103,7 +99,7 @@ public final class Daemons {
             if (threadToStop == null) {
                 throw new IllegalStateException("not running");
             }
-            interrupt(threadToStop);
+            threadToStop.interrupt();
             while (true) {
                 try {
                     threadToStop.join();
@@ -321,20 +317,34 @@ public final class Daemons {
         }
     }
 
+    // Invoked by the GC to request that the HeapTrimmerDaemon thread attempt to trim the heap.
+    public static void requestGC() {
+        GCDaemon.INSTANCE.requestGC();
+    }
+
     private static class GCDaemon extends Daemon {
         private static final GCDaemon INSTANCE = new GCDaemon();
+        private static final AtomicBoolean atomicBoolean = new AtomicBoolean();
 
-        // Overrides the Daemon.interupt method which is called from Daemons.stop.
-        public void interrupt(Thread thread) {
-            // Notifies the daemon thread.
-            VMRuntime.getRuntime().requestConcurrentGC();
+        public void requestGC() {
+            if (atomicBoolean.getAndSet(true)) {
+              return;
+            }
+            synchronized (this) {
+                notify();
+            }
+            atomicBoolean.set(false);
         }
 
         @Override public void run() {
             while (isRunning()) {
-                VMRuntime.getRuntime().waitForConcurrentGCRequest();
-                if (isRunning()) {
+                try {
+                    synchronized (this) {
+                        // Wait until a request comes in.
+                        wait();
+                    }
                     VMRuntime.getRuntime().concurrentGC();
+                } catch (InterruptedException ignored) {
                 }
             }
         }

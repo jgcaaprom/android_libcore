@@ -293,8 +293,6 @@ public final class VMRuntime {
 
     public native void trimHeap();
     public native void concurrentGC();
-    public native void requestConcurrentGC();
-    public native void waitForConcurrentGCRequest();
 
     /**
      * Let the heap know of the new process state. This can change allocation and garbage collection
