@@ -429,11 +429,7 @@ import static android.system.OsConstants.S_ISDIR;
             }
 
             try {
-<<<<<<< HEAD
-                zipFile = new ZipFile(zip);
-=======
                 urlHandler = new ClassPathURLStreamHandler(zip.getPath());
->>>>>>> 05a5c2f... Modification to the way boot classpath resources are loaded
             } catch (IOException ioe) {
                 /*
                  * Note: ZipException (a subclass of IOException)
@@ -466,23 +462,7 @@ import static android.system.OsConstants.S_ISDIR;
                  */
                 return null;
             }
-<<<<<<< HEAD
-
-            try {
-                /*
-                 * File.toURL() is compliant with RFC 1738 in
-                 * always creating absolute path names. If we
-                 * construct the URL by concatenating strings, we
-                 * might end up with illegal URLs for relative
-                 * names.
-                 */
-                return new URL("jar:" + file.toURL() + "!/" + name);
-            } catch (MalformedURLException ex) {
-                throw new RuntimeException(ex);
-            }
-=======
             return urlHandler.getEntryUrlOrNull(name);
->>>>>>> 05a5c2f... Modification to the way boot classpath resources are loaded
         }
     }
 }
