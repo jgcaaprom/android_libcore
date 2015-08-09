@@ -57,8 +57,8 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
             }
             int comparison = a.getName().compareTo(b.getName());
             if (comparison == 0) {
-                comparison = Class.findOverriddenMethodIfProxy(a.artMethod).compareParameters(
-                        Class.findOverriddenMethodIfProxy(b.artMethod).getParameterTypes());
+                comparison = a.artMethod.findOverriddenMethodIfProxy().compareParameters(
+                        b.getParameterTypes());
                 if (comparison == 0) {
                     // This is necessary for methods that have covariant return types.
                     Class<?> aReturnType = a.getReturnType();
@@ -136,8 +136,7 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
      * @return the name of this method
      */
     @Override public String getName() {
-        ArtMethod nonProxyMethod = Class.findOverriddenMethodIfProxy(artMethod);
-        return ArtMethod.getMethodName(nonProxyMethod);
+        return ArtMethod.getMethodName(artMethod);
     }
 
     /**
@@ -172,7 +171,7 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
      * @return the parameter types
      */
     @Override public Class<?>[] getParameterTypes() {
-        return Class.findOverriddenMethodIfProxy(artMethod).getParameterTypes();
+        return artMethod.findOverriddenMethodIfProxy().getParameterTypes();
     }
 
     /**
@@ -182,7 +181,7 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
      * @return the return type
      */
     public Class<?> getReturnType() {
-        return Class.findOverriddenMethodIfProxy(artMethod).getReturnType();
+        return artMethod.findOverriddenMethodIfProxy().getReturnType();
     }
 
     /**
@@ -210,10 +209,8 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
      * @hide needed by Proxy
      */
     boolean equalNameAndParameters(Method m) {
-        ArtMethod nonProxyThis = Class.findOverriddenMethodIfProxy(this.artMethod);
-        ArtMethod nonProxyM = Class.findOverriddenMethodIfProxy(m.artMethod);
-        return ArtMethod.getMethodName(nonProxyThis).equals(ArtMethod.getMethodName(nonProxyM)) &&
-                ArtMethod.equalMethodParameters(nonProxyThis, nonProxyM.getParameterTypes());
+        return getName().equals(m.getName()) &&
+                ArtMethod.equalMethodParameters(artMethod,m.getParameterTypes());
     }
 
     /**
@@ -313,7 +310,7 @@ public final class Method extends AbstractMethod implements GenericDeclaration, 
      * @return an array of arrays of {@code Annotation} instances
      */
     public Annotation[][] getParameterAnnotations() {
-        return Class.findOverriddenMethodIfProxy(artMethod).getParameterAnnotations();
+        return artMethod.findOverriddenMethodIfProxy().getParameterAnnotations();
     }
 
     /**
