@@ -16,10 +16,9 @@
 
 package libcore.icu;
 
-import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
-import android.icu.util.ULocale;
-
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 import static libcore.icu.DateIntervalFormat.*;
 
 public class DateIntervalFormatTest extends junit.framework.TestCase {
@@ -33,7 +32,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   public void test_formatDateInterval() throws Exception {
     TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
 
-    Calendar c = Calendar.getInstance(tz, ULocale.US);
+    Calendar c = Calendar.getInstance(tz, Locale.US);
     c.set(Calendar.MONTH, Calendar.JANUARY);
     c.set(Calendar.DAY_OF_MONTH, 19);
     c.set(Calendar.HOUR_OF_DAY, 3);
@@ -52,10 +51,10 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
     long noonDuration = (8 * 60 + 30) * 60 * 1000 - 15 * 1000;
     long midnightDuration = (3 * 60 + 30) * 60 * 1000 + 15 * 1000;
 
-    ULocale de_DE = new ULocale("de", "DE");
-    ULocale en_US = new ULocale("en", "US");
-    ULocale es_ES = new ULocale("es", "ES");
-    ULocale es_US = new ULocale("es", "US");
+    Locale de_DE = new Locale("de", "DE");
+    Locale en_US = new Locale("en", "US");
+    Locale es_ES = new Locale("es", "ES");
+    Locale es_US = new Locale("es", "US");
 
     assertEquals("Monday", formatDateRange(en_US, tz, fixedTime, fixedTime + HOUR, FORMAT_SHOW_WEEKDAY));
     assertEquals("January 19", formatDateRange(en_US, tz, timeWithCurrentYear, timeWithCurrentYear + HOUR, FORMAT_SHOW_DATE));
@@ -169,7 +168,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/8862241 - we should be able to format dates past 2038.
   // See also http://code.google.com/p/android/issues/detail?id=13050.
   public void test8862241() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
     Calendar c = Calendar.getInstance(tz, l);
     c.clear();
@@ -183,7 +182,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
 
   // http://b/10089890 - we should take the given time zone into account.
   public void test10089890() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
     TimeZone pacific = TimeZone.getTimeZone("America/Los_Angeles");
     int flags = FORMAT_SHOW_DATE | FORMAT_ABBREV_ALL | FORMAT_SHOW_TIME | FORMAT_24HOUR;
@@ -205,7 +204,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
     int abbr12 = time12 | FORMAT_ABBREV_ALL;
     int abbr24 = time24 | FORMAT_ABBREV_ALL;
 
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     // Full length on-the-hour times.
@@ -232,7 +231,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/10560853 - when the time is not displayed, an end time 0 ms into the next day is
   // considered to belong to the previous day.
   public void test10560853_when_time_not_displayed() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     long midnight = 0;
@@ -256,7 +255,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/10560853 - when the start and end times are otherwise on the same day,
   // an end time 0 ms into the next day is considered to belong to the previous day.
   public void test10560853_for_single_day_events() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     int flags = FORMAT_SHOW_TIME | FORMAT_24HOUR | FORMAT_SHOW_DATE;
@@ -268,7 +267,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // The fix for http://b/10560853 didn't work except for the day around the epoch, which was
   // all the unit test checked!
   public void test_single_day_events_later_than_epoch() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     int flags = FORMAT_SHOW_TIME | FORMAT_24HOUR | FORMAT_SHOW_DATE;
@@ -286,7 +285,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // The fix for http://b/10560853 didn't work except for UTC, which was
   // all the unit test checked!
   public void test_single_day_events_not_in_UTC() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone pacific = TimeZone.getTimeZone("America/Los_Angeles");
 
     int flags = FORMAT_SHOW_TIME | FORMAT_24HOUR | FORMAT_SHOW_DATE;
@@ -307,7 +306,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/10209343 - even if the caller didn't explicitly ask us to include the year,
   // we should do so for years other than the current year.
   public void test10209343_when_not_this_year() {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     int flags = FORMAT_SHOW_DATE | FORMAT_SHOW_WEEKDAY | FORMAT_SHOW_TIME | FORMAT_24HOUR;
@@ -330,7 +329,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/10209343 - for the current year, we should honor the FORMAT_SHOW_YEAR flags.
   public void test10209343_when_this_year() {
     // Construct a date in the current year (whenever the test happens to be run).
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
     Calendar c = Calendar.getInstance(utc, l);
     c.set(Calendar.MONTH, Calendar.FEBRUARY);
@@ -365,7 +364,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
 
   // http://b/8467515 - yet another y2k38 bug report.
   public void test8467515() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
     int flags = FORMAT_SHOW_DATE | FORMAT_SHOW_WEEKDAY | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH | FORMAT_ABBREV_WEEKDAY;
     long t;
@@ -385,7 +384,7 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
   // http://b/12004664
   public void test12004664() throws Exception {
     TimeZone utc = TimeZone.getTimeZone("UTC");
-    Calendar c = Calendar.getInstance(utc, ULocale.US);
+    Calendar c = Calendar.getInstance(utc, Locale.US);
     c.clear();
     c.set(Calendar.YEAR, 1980);
     c.set(Calendar.MONTH, Calendar.FEBRUARY);
@@ -394,26 +393,26 @@ public class DateIntervalFormatTest extends junit.framework.TestCase {
     long thisYear = c.getTimeInMillis();
 
     int flags = FORMAT_SHOW_DATE | FORMAT_SHOW_WEEKDAY | FORMAT_SHOW_YEAR;
-    assertEquals("Sunday, February 10, 1980", formatDateRange(new ULocale("en", "US"), utc, thisYear, thisYear, flags));
+    assertEquals("Sunday, February 10, 1980", formatDateRange(new Locale("en", "US"), utc, thisYear, thisYear, flags));
 
-    // If we supported non-Gregorian calendars, this is what that we'd expect for these ULocales.
+    // If we supported non-Gregorian calendars, this is what that we'd expect for these locales.
     // This is really the correct behavior, but since java.util.Calendar currently only supports
     // the Gregorian calendar, we want to deliberately force icu4c to agree, otherwise we'd have
     // a mix of calendars throughout an app's UI depending on whether Java or native code formatted
     // the date.
-    // assertEquals("یکشنبه ۲۱ بهمن ۱۳۵۸ ه‍.ش.", formatDateRange(new ULocale("fa"), utc, thisYear, thisYear, flags));
-    // assertEquals("AP ۱۳۵۸ سلواغه ۲۱, یکشنبه", formatDateRange(new ULocale("ps"), utc, thisYear, thisYear, flags));
-    // assertEquals("วันอาทิตย์ 10 กุมภาพันธ์ 2523", formatDateRange(new ULocale("th"), utc, thisYear, thisYear, flags));
+    // assertEquals("یکشنبه ۲۱ بهمن ۱۳۵۸ ه‍.ش.", formatDateRange(new Locale("fa"), utc, thisYear, thisYear, flags));
+    // assertEquals("AP ۱۳۵۸ سلواغه ۲۱, یکشنبه", formatDateRange(new Locale("ps"), utc, thisYear, thisYear, flags));
+    // assertEquals("วันอาทิตย์ 10 กุมภาพันธ์ 2523", formatDateRange(new Locale("th"), utc, thisYear, thisYear, flags));
 
     // For now, here are the localized Gregorian strings instead...
-    assertEquals("یکشنبه ۱۰ فوریهٔ ۱۹۸۰", formatDateRange(new ULocale("fa"), utc, thisYear, thisYear, flags));
-    assertEquals("یکشنبه د ۱۹۸۰ د فبروري ۱۰", formatDateRange(new ULocale("ps"), utc, thisYear, thisYear, flags));
-    assertEquals("วันอาทิตย์ที่ 10 กุมภาพันธ์ ค.ศ. 1980", formatDateRange(new ULocale("th"), utc, thisYear, thisYear, flags));
+    assertEquals("یکشنبه ۱۰ فوریهٔ ۱۹۸۰", formatDateRange(new Locale("fa"), utc, thisYear, thisYear, flags));
+    assertEquals("یکشنبه د ۱۹۸۰ د فبروري ۱۰", formatDateRange(new Locale("ps"), utc, thisYear, thisYear, flags));
+    assertEquals("วันอาทิตย์ที่ 10 กุมภาพันธ์ ค.ศ. 1980", formatDateRange(new Locale("th"), utc, thisYear, thisYear, flags));
   }
 
   // http://b/13234532
   public void test13234532() throws Exception {
-    ULocale l = ULocale.US;
+    Locale l = Locale.US;
     TimeZone utc = TimeZone.getTimeZone("UTC");
 
     int flags = FORMAT_SHOW_TIME | FORMAT_ABBREV_ALL | FORMAT_12HOUR;
