@@ -58,6 +58,7 @@ jint JNI_OnLoad(JavaVM* vm, void*) {
     REGISTER(register_java_util_zip_Deflater);
     REGISTER(register_java_util_zip_Inflater);
     REGISTER(register_libcore_icu_AlphabeticIndex);
+    REGISTER(register_libcore_icu_DateIntervalFormat);
     REGISTER(register_libcore_icu_ICU);
     REGISTER(register_libcore_icu_NativeCollation);
     REGISTER(register_libcore_icu_NativeConverter);
@@ -65,6 +66,7 @@ jint JNI_OnLoad(JavaVM* vm, void*) {
     REGISTER(register_libcore_icu_NativeIDN);
     REGISTER(register_libcore_icu_NativeNormalizer);
     REGISTER(register_libcore_icu_NativePluralRules);
+    REGISTER(register_libcore_icu_RelativeDateTimeFormatter);
     REGISTER(register_libcore_icu_TimeZoneNames);
     REGISTER(register_libcore_icu_Transliterator);
     REGISTER(register_libcore_io_AsynchronousCloseMonitor);
